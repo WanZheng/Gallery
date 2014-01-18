@@ -1,0 +1,12 @@
+/libs/
+/ant.properties
+
+/.idea/
+
+/local.properties
+/bin/
+/gen/
+/out/
+/obj/
+
+*.swp
