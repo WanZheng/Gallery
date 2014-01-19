@@ -4,9 +4,7 @@ import android.app.Activity;
 import android.app.LoaderManager;
 import android.content.Loader;
 import android.os.Bundle;
-import android.widget.ArrayAdapter;
-import android.widget.EditText;
-import android.widget.GridView;
+import android.widget.*;
 
 import java.util.List;
 
@@ -14,8 +12,9 @@ public class Gallery extends Activity implements LoaderManager.LoaderCallbacks<L
 {
     public static final String TAG = "Gallery";
 
-    private ArrayAdapter<FileEntry> adapter;
+    private DirectoryAdapter adapter;
     private EditText urlView;
+    private GridView gridView;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -25,13 +24,31 @@ public class Gallery extends Activity implements LoaderManager.LoaderCallbacks<L
 
         urlView = (EditText)findViewById(R.id.url);
 
-        GridView gridView = (GridView)findViewById(R.id.gridView);
-        adapter = new ArrayAdapter<FileEntry>(this, R.layout.text_node, R.id.text);
+        gridView = (GridView)findViewById(R.id.gridView);
+        adapter = new DirectoryAdapter(this);
         gridView.setAdapter(adapter);
 
         Loader<List<FileEntry>> loader = getLoaderManager().initLoader(0, null, this);
 
         loader.forceLoad(); // TODO: 为什么没有自动load?
+
+//        {
+//            FileEntry entry;
+//            entry = new FileEntry("http://192.168.0.8:8000/gallery/", "DSC06152.JPG");
+//            adapter.add(entry);
+//            entry = new FileEntry("http://192.168.0.8:8000/gallery/", "DSC06146.JPG");
+//            adapter.add(entry);
+//            entry = new FileEntry("http://192.168.0.8:8000/gallery/", "DSC06007.JPG");
+//            adapter.add(entry);
+//            entry = new FileEntry("http://192.168.0.8:8000/gallery/", "DSC05999.JPG");
+//            adapter.add(entry);
+//            entry = new FileEntry("http://192.168.0.8:8000/gallery/", "DSC05988.JPG");
+//            adapter.add(entry);
+//            entry = new FileEntry("http://192.168.0.8:8000/gallery/", "DSC05979.JPG");
+//            adapter.add(entry);
+//            entry = new FileEntry("http://192.168.0.8:8000/gallery/", "DSC05975.JPG");
+//            adapter.add(entry);
+//        }
     }
 
     @Override
@@ -53,4 +70,5 @@ public class Gallery extends Activity implements LoaderManager.LoaderCallbacks<L
     public void onLoaderReset(Loader<List<FileEntry>> loader) {
         adapter.clear();
     }
+
 }

@@ -6,10 +6,8 @@ import android.net.http.AndroidHttpClient;
 import android.util.JsonReader;
 import android.util.Log;
 import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.impl.client.DefaultHttpClient;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -21,7 +19,7 @@ import java.util.List;
  */
 public class DirectoryLoader extends AsyncTaskLoader<List<FileEntry>> {
     public String url;
-    public AndroidHttpClient client = AndroidHttpClient.newInstance("gallery");
+    public final AndroidHttpClient client = AndroidHttpClient.newInstance("gallery");
 
     public DirectoryLoader(Context context) {
         super(context);
@@ -29,24 +27,20 @@ public class DirectoryLoader extends AsyncTaskLoader<List<FileEntry>> {
 
     @Override
     public List<FileEntry> loadInBackground() {
-        Log.d(Gallery.TAG, "loadInBackground: " + url);
-
-        HttpUriRequest request = new HttpGet(url);
+        final HttpUriRequest request = new HttpGet(url);
         try {
-            HttpResponse response = client.execute(request);
-            JsonReader reader = new JsonReader(new InputStreamReader(response.getEntity().getContent()));
+            final HttpResponse response = client.execute(request);
+            final JsonReader reader = new JsonReader(new InputStreamReader(response.getEntity().getContent()));
 
-            ArrayList<FileEntry> list = new ArrayList<FileEntry>();
+            final ArrayList<FileEntry> list = new ArrayList<FileEntry>();
             reader.beginArray();
             while (reader.hasNext()) {
                 reader.beginObject();
                 while (reader.hasNext()) {
                     String name = reader.nextName();
                     if (name.equals("Url")) {
-                        FileEntry entry = new FileEntry();
-                        entry.baseDir = url;
-                        entry.filename = reader.nextString();
-                        entry.isDir = false;
+                        String filename = reader.nextString();
+                        FileEntry entry = new FileEntry(url, filename.substring(9));
                         list.add(entry);
                     }else{
                         reader.skipValue();
