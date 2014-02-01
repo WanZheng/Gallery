@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -13,18 +14,19 @@ import android.widget.TextView;
  * Created on 18/1/14 by cos
  */
 public class DirectoryAdapter extends ArrayAdapter<FileEntry> {
-    private final LayoutInflater inflater;
+    // private final LayoutInflater inflater;
 
     public DirectoryAdapter(Context context) {
         super(context, R.layout.text_node);
 
-        inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        // inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         Log.d(Gallery.TAG, "getView(position=" + position + ", convertView=" + convertView);
 
+        /*
         View view;
         if (convertView == null) {
             view = inflater.inflate(R.layout.text_node, parent, false);
@@ -50,5 +52,19 @@ public class DirectoryAdapter extends ArrayAdapter<FileEntry> {
         }
 
         return view;
+        */
+
+        ImageView imageView;
+        if (convertView == null) { // if it's not recycled, initialize some attributes
+            imageView = new CustomImageView(getContext());
+            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            imageView.setLayoutParams(new GridView.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        } else {
+            imageView = (ImageView) convertView;
+        }
+        FileEntry entry = getItem(position);
+        AsyncDrawable.setupAsyncDrawable(entry.baseDir+entry.filename, imageView);
+        return imageView;
     }
 }

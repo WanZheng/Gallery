@@ -15,14 +15,18 @@
         <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="http://192.168.0.8:8000/gallery/"
+                android:text="http://192.168.0.106:8000/gallery/"
                 android:id="@+id/url" android:layout_toLeftOf="@+id/go"
                 android:layout_alignBaseline="@+id/go" android:singleLine="true"/>
     </RelativeLayout>
     <GridView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/gridView" android:layout_gravity="center"
-            android:numColumns="2"/>
+            android:id="@+id/gridView"
+            android:layout_gravity="center"
+            android:numColumns="2"
+            android:verticalSpacing="2dp"
+            android:horizontalSpacing="2dp"
+            />
 </LinearLayout>
 

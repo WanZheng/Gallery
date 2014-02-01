@@ -37,7 +37,6 @@ public class AsyncDrawable extends ColorDrawable{
     }
 
     public AsyncDrawable(BitmapDownloadTask downloadTask) {
-        super(Color.BLUE);
         taskWeakReference = new WeakReference<BitmapDownloadTask>(downloadTask);
     }
 
@@ -88,7 +87,7 @@ public class AsyncDrawable extends ColorDrawable{
         @Override
         protected void onPostExecute(Bitmap bitmap) {
             if (isCancelled()) {
-                bitmap = null;
+                return;
             }
 
             if (imageViewWeakReference != null) {
