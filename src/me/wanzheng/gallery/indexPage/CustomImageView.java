@@ -1,4 +1,4 @@
-package me.wanzheng.gallery;
+package me.wanzheng.gallery.indexPage;
 
 import android.content.Context;
 import android.util.AttributeSet;

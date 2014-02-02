@@ -1,14 +1,15 @@
-package me.wanzheng.gallery;
+package me.wanzheng.gallery.indexPage;
 
 import android.content.Context;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.TextView;
+import me.wanzheng.gallery.AsyncDrawable;
+import me.wanzheng.gallery.FileEntry;
+import me.wanzheng.gallery.R;
 
 /**
  * Created on 18/1/14 by cos
@@ -24,7 +25,7 @@ public class DirectoryAdapter extends ArrayAdapter<FileEntry> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        Log.d(Gallery.TAG, "getView(position=" + position + ", convertView=" + convertView);
+        Log.d(IndexPage.TAG, "getView(position=" + position + ", convertView=" + convertView);
 
         /*
         View view;
@@ -64,7 +65,7 @@ public class DirectoryAdapter extends ArrayAdapter<FileEntry> {
             imageView = (ImageView) convertView;
         }
         FileEntry entry = getItem(position);
-        AsyncDrawable.setupAsyncDrawable(entry.baseDir+entry.filename, imageView);
+        AsyncDrawable.setupAsyncDrawable(entry.baseDir + entry.filename, imageView);
         return imageView;
     }
 }
