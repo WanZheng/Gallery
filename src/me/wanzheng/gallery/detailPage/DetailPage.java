@@ -3,16 +3,24 @@ package me.wanzheng.gallery.detailPage;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.FragmentTransaction;
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.app.NavUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.WindowManager;
+import android.view.*;
+import android.widget.Toast;
 import me.wanzheng.gallery.Gallery;
 import me.wanzheng.gallery.R;
+import me.wanzheng.gallery.util.UrlDownloader;
+
+import java.io.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Created on 2/2/14 by cos
@@ -33,6 +41,8 @@ public class DetailPage extends Activity implements View.OnClickListener {
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         final int screenWidth = displayMetrics.widthPixels;
         final int screenHeight = displayMetrics.heightPixels;
+
+        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
@@ -89,8 +99,11 @@ public class DetailPage extends Activity implements View.OnClickListener {
                 return true;
 
             case R.id.save:
-                SavePhotoTask task = new SavePhotoTask(this);
+                SavePhotoTask task = new SavePhotoTask();
                 task.execute(imageUrl + "?size=1024x1024&scaleType=fit_xy");
+
+                setProgressBarIndeterminateVisibility(true);
+
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -104,6 +117,59 @@ public class DetailPage extends Activity implements View.OnClickListener {
             content.setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
         } else {
             content.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE);
+        }
+    }
+
+    private static SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssSSS");
+    public class SavePhotoTask extends AsyncTask<String, Integer, String> {
+        @Override
+        protected String doInBackground(String... params) {
+            String url = params[0];
+
+            String fileName = format.format(new Date()) + ".jpg";
+            File dir = new File(Environment.getExternalStoragePublicDirectory(
+                    Environment.DIRECTORY_PICTURES), "gallery");
+            if (!dir.isDirectory() && !dir.mkdirs()) {
+                Log.e(Gallery.TAG, "Failed to create dir: " + dir.getPath());
+                return null;
+            }
+
+            File file = new File(dir, fileName);
+
+            OutputStream out = null;
+            try {
+                out = new FileOutputStream(file);
+                UrlDownloader.downloadUrlToStream(url, out);
+            } catch (FileNotFoundException e) {
+                Log.e(Gallery.TAG, "Failed to open file " + file + ": " + e);
+                return null;
+            } finally {
+                if (out != null) {
+                    try {
+                        out.close();
+                    } catch (IOException e) {
+                    }
+                }
+            }
+
+            return file.getPath();
+        }
+
+        @Override
+        protected void onPostExecute(String path) {
+            setProgressBarIndeterminateVisibility(false);
+
+            if (path == null) {
+                Toast.makeText(DetailPage.this, getString(R.string.saved_failed_toast), Toast.LENGTH_LONG).show();
+                return;
+            }
+
+            Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+            Uri uri = Uri.fromFile(new File(path));
+            intent.setData(uri);
+            sendBroadcast(intent);
+
+            Toast.makeText(DetailPage.this, getString(R.string.saved_toast), Toast.LENGTH_LONG).show();
         }
     }
 }
