@@ -8,7 +8,6 @@ import android.net.http.AndroidHttpClient;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.ImageView;
-import me.wanzheng.gallery.indexPage.IndexPage;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -23,13 +22,17 @@ import java.lang.ref.WeakReference;
 public class AsyncDrawable extends ColorDrawable{
     private final WeakReference<BitmapDownloadTask> taskWeakReference;
 
-    public static void setupAsyncDrawable(String url, ImageView imageView) {
+    public static void setupAsyncDrawable(String url, ImageView imageView, int width, int height) {
         if (! cancelPotentialDownload(url, imageView)) {
             return;
         }
 
         BitmapDownloadTask task = new BitmapDownloadTask(imageView);
         task.url = url;
+        if (width > 0 && height > 0) {
+            task.url += "?size=" + width + "x" + height;
+        }
+
         AsyncDrawable drawable = new AsyncDrawable(task);
         imageView.setImageDrawable(drawable);
 
@@ -56,6 +59,14 @@ public class AsyncDrawable extends ColorDrawable{
 
         task.cancel(true);
         return true;
+    }
+
+    public static void cancelDownloadTask(ImageView imageView) {
+        BitmapDownloadTask task = getDownloadTask(imageView);
+        if (task == null) {
+            return;
+        }
+        task.cancel(true);
     }
 
     private static BitmapDownloadTask getDownloadTask(ImageView imageView) {
@@ -99,9 +110,6 @@ public class AsyncDrawable extends ColorDrawable{
         }
 
         private Bitmap downloadBitmap(String url) {
-            // url = "http://192.168.0.8:8000/gallery/DSC06152.JPG?size=medium";
-            url = url + "?size=medium";
-
             final AndroidHttpClient client = AndroidHttpClient.newInstance("Android");
             final HttpGet getRequest = new HttpGet(url);
 
@@ -109,13 +117,13 @@ public class AsyncDrawable extends ColorDrawable{
                 HttpResponse response = client.execute(getRequest);
                 final int statusCode = response.getStatusLine().getStatusCode();
                 if (statusCode != HttpStatus.SC_OK) {
-                    Log.w(IndexPage.TAG, "Error " + statusCode + " while retrieving bitmap from " + url);
+                    Log.w(Gallery.TAG, "Error " + statusCode + " while retrieving bitmap from " + url);
                     return null;
                 }
 
                 final HttpEntity entity = response.getEntity();
                 if (entity == null) {
-                    Log.w(IndexPage.TAG, "Error failed to get entity");
+                    Log.w(Gallery.TAG, "Error failed to get entity");
                     return null;
                 }
 
@@ -123,7 +131,7 @@ public class AsyncDrawable extends ColorDrawable{
                 try {
                     inputStream = entity.getContent();
                     final Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-                    Log.d(IndexPage.TAG, "task: " + this + ", download finished: " + url);
+                    Log.d(Gallery.TAG, "task: " + this + ", download finished: " + url);
                     return bitmap;
                 } finally {
                     if (inputStream != null) {
@@ -134,14 +142,14 @@ public class AsyncDrawable extends ColorDrawable{
             } catch (Exception e) {
                 // Could provide a more explicit error message for IOException or IllegalStateException
                 getRequest.abort();
-                Log.w(IndexPage.TAG, "Error while retrieving bitmap from " + url, e);
+                Log.w(Gallery.TAG, "Error while retrieving bitmap from " + url, e);
             } finally {
                 if (client != null) {
                     client.close();
                 }
             }
 
-            Log.w(IndexPage.TAG, "Error failed to download bitmap: " + url);
+            Log.w(Gallery.TAG, "Error failed to download bitmap: " + url);
             return null;
         }
     }

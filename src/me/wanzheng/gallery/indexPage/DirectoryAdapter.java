@@ -9,6 +9,7 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import me.wanzheng.gallery.AsyncDrawable;
 import me.wanzheng.gallery.FileEntry;
+import me.wanzheng.gallery.Gallery;
 import me.wanzheng.gallery.R;
 
 /**
@@ -25,7 +26,7 @@ public class DirectoryAdapter extends ArrayAdapter<FileEntry> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        Log.d(IndexPage.TAG, "getView(position=" + position + ", convertView=" + convertView);
+        Log.d(Gallery.TAG, "getView(position=" + position + ", convertView=" + convertView);
 
         /*
         View view;
@@ -65,7 +66,7 @@ public class DirectoryAdapter extends ArrayAdapter<FileEntry> {
             imageView = (ImageView) convertView;
         }
         FileEntry entry = getItem(position);
-        AsyncDrawable.setupAsyncDrawable(entry.baseDir + entry.filename, imageView);
+        AsyncDrawable.setupAsyncDrawable(entry.baseDir + entry.filename, imageView, 300, 300);
         return imageView;
     }
 }

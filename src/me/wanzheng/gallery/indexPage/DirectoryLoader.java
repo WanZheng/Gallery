@@ -6,6 +6,7 @@ import android.net.http.AndroidHttpClient;
 import android.util.JsonReader;
 import android.util.Log;
 import me.wanzheng.gallery.FileEntry;
+import me.wanzheng.gallery.Gallery;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpUriRequest;
@@ -55,7 +56,7 @@ public class DirectoryLoader extends AsyncTaskLoader<List<FileEntry>> {
             return list;
 
         } catch (IOException e) {
-            Log.e(IndexPage.TAG, "Failed to load " + url + ": " + e);
+            Log.e(Gallery.TAG, "Failed to load " + url + ": " + e);
             return null;
         }
     }
