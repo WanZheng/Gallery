@@ -1,6 +1,7 @@
 package me.wanzheng.gallery.detailPage;
 
 import android.app.Fragment;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -43,6 +44,10 @@ public class DetailFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
         AsyncDrawable.setupAsyncDrawable(imageUrl, imageView, 800, 800);
+
+        if (View.OnClickListener.class.isInstance(getActivity())) {
+            imageView.setOnClickListener((View.OnClickListener)getActivity());
+        }
     }
 
     @Override

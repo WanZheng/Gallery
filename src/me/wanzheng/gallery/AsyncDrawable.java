@@ -30,7 +30,7 @@ public class AsyncDrawable extends ColorDrawable{
         BitmapDownloadTask task = new BitmapDownloadTask(imageView);
         task.url = url;
         if (width > 0 && height > 0) {
-            task.url += "?size=" + width + "x" + height;
+            task.url += "?size=" + width + "x" + height + "&scaleType=center_crop";
         }
 
         AsyncDrawable drawable = new AsyncDrawable(task);
