@@ -40,9 +40,9 @@ public class DirectoryLoader extends AsyncTaskLoader<List<FileEntry>> {
                 reader.beginObject();
                 while (reader.hasNext()) {
                     String name = reader.nextName();
-                    if (name.equals("Url")) {
+                    if (name.equals("Name")) {
                         String filename = reader.nextString();
-                        FileEntry entry = new FileEntry(url, filename.substring(9));
+                        FileEntry entry = new FileEntry(url, filename);
                         list.add(entry);
                     }else{
                         reader.skipValue();

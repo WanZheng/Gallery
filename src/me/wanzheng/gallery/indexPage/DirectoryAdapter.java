@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.TextView;
 import me.wanzheng.gallery.AsyncDrawable;
 import me.wanzheng.gallery.FileEntry;
 import me.wanzheng.gallery.Gallery;
@@ -56,16 +57,34 @@ public class DirectoryAdapter extends ArrayAdapter<FileEntry> {
         return view;
         */
 
+        FileEntry entry = getItem(position);
+        if (entry.filename.endsWith("/")) {
+            TextView textView;
+            if (TextView.class.isInstance(convertView)) {
+                textView = (TextView)convertView;
+            }else{
+                textView = new TextView(getContext());
+                textView.setLayoutParams(new GridView.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+                textView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                textView.setTextSize(30);
+            }
+
+            textView.setText(entry.filename);
+            return textView;
+        }
+
         ImageView imageView;
-        if (convertView == null) { // if it's not recycled, initialize some attributes
+        if (ImageView.class.isInstance(convertView)) {
+            imageView = (ImageView) convertView;
+        } else {
+            // if it's not recycled, initialize some attributes
             imageView = new CustomImageView(getContext());
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
             imageView.setLayoutParams(new GridView.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        } else {
-            imageView = (ImageView) convertView;
         }
-        FileEntry entry = getItem(position);
+
         AsyncDrawable.setupAsyncDrawable(entry.baseDir + entry.filename, imageView, 300, 300);
         return imageView;
     }

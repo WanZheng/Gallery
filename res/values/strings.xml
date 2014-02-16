@@ -4,4 +4,5 @@
     <string name="save_menu">Save</string>
     <string name="saved_toast">Saved</string>
     <string name="saved_failed_toast">Failed to save</string>
+    <string name="up_menu">Up</string>
 </resources>
